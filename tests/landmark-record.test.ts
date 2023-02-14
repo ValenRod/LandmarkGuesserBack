@@ -35,3 +35,16 @@ test('LandmarkRecord.getOne returns null from database if entry does not exist.'
   const landmark = await LandmarkRecord.getOne('');
   expect(landmark).toBeNull();
 });
+
+test('LandmarkRecord.findAll returns array of found entries.', async () => {
+  const landmarks = await LandmarkRecord.findAll();
+  expect(landmarks).not.toEqual([]);
+  expect(landmarks[0].id).toBeDefined();
+});
+
+test('LandmarkRecord.findAll returns only id.', async () => {
+  const landmarks = await LandmarkRecord.findAll();
+  expect((landmarks[0] as LandmarkEntity).url).toBeUndefined();
+  expect((landmarks[0] as LandmarkEntity).lat).toBeUndefined();
+  expect((landmarks[0] as LandmarkEntity).lng).toBeUndefined();
+});

@@ -1,4 +1,4 @@
-import {LandmarkEntity} from '../types';
+import {LandmarkEntity, LandmarkEntityId} from '../types';
 import {pool} from '../utils/db';
 import {FieldPacket} from 'mysql2';
 
@@ -26,5 +26,12 @@ export class LandmarkRecord implements LandmarkEntity {
     )) as LandmarkRecordResults;
 
     return results.length === 0 ? null : new LandmarkRecord(results[0]);
+  }
+
+  static async findAll(): Promise<LandmarkEntityId[]> {
+    const [results] = (await pool.execute(
+      'SELECT `id` FROM `landmarks`',
+    )) as LandmarkRecordResults;
+    return results;
   }
 }
