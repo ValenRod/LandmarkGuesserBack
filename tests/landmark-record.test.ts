@@ -24,3 +24,14 @@ test('Can build LandmarkRecord', () => {
   const landmark = new LandmarkRecord(landmarkObj);
   valuesCheck(landmark);
 });
+
+test('LandmarkRecord.getOne returns data from database from one entry.', async () => {
+  const landmark = await LandmarkRecord.getOne(landmarkObj.id);
+  expect(landmark).toBeDefined();
+  valuesCheck(landmark);
+});
+
+test('LandmarkRecord.getOne returns null from database if entry does not exist.', async () => {
+  const landmark = await LandmarkRecord.getOne('');
+  expect(landmark).toBeNull();
+});
