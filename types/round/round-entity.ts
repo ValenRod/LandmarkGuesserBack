@@ -16,6 +16,14 @@ export interface RoundEntity {
   points: number | null;
 }
 
-export interface NewRoundEntity extends Omit<RoundEntity, 'id'> {
+export interface NewRoundEntity
+  extends Omit<
+    RoundEntity,
+    'id' | 'playerGuessLat' | 'playerGuessLng' | 'distance' | 'points'
+  > {
   id?: string;
+  playerGuessLat?: number | null;
+  playerGuessLng?: number | null;
+  distance?: number | null;
+  points?: number | null;
 }
