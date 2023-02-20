@@ -52,4 +52,17 @@ export class RoundRecord implements RoundEntity {
     );
     return this.id;
   }
+
+  async update(): Promise<void> {
+    await pool.execute(
+      'UPDATE `rounds` SET `playerGuessLat` = :playerGuessLat, `playerGuessLng` = :playerGuessLng, `distance` = :distance, `points` = :points WHERE `id` = :id',
+      {
+        id: this.id,
+        playerGuessLat: this.playerGuessLat,
+        playerGuessLng: this.playerGuessLng,
+        distance: this.distance,
+        points: this.points,
+      },
+    );
+  }
 }

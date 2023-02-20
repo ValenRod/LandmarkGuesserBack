@@ -68,3 +68,26 @@ test('RoundRecord cannot be inserted if it has an id.', async () => {
   expect(message).toBeDefined();
   expect(message).toBe('Cannot insert something that is already inserted!!!');
 });
+
+test('RoundRecord updates data in database.', async () => {
+  const updatedData = {
+    playerGuessLat: 51,
+    playerGuessLng: 39,
+    distance: 200,
+    points: 800,
+  };
+  const round = new RoundRecord(newRoundObj);
+  const id = await round.insert();
+
+  round.playerGuessLat = updatedData.playerGuessLat;
+  round.playerGuessLng = updatedData.playerGuessLng;
+  round.distance = updatedData.distance;
+  round.points = updatedData.points;
+  await round.update();
+
+  const updatedRound = await RoundRecord.getOne(id);
+  expect(updatedRound.playerGuessLat).toBe(updatedData.playerGuessLat);
+  expect(updatedRound.playerGuessLng).toBe(updatedData.playerGuessLng);
+  expect(updatedRound.distance).toBe(updatedData.distance);
+  expect(updatedRound.points).toBe(updatedData.points);
+});
