@@ -6,10 +6,6 @@ const roundObj: NewRoundEntity = {
   id: 'testId',
   roundNumber: RoundNumber.First,
   landmarkId: 'testId',
-  playerGuessLat: null,
-  playerGuessLng: null,
-  distance: null,
-  points: null,
 };
 
 const valuesCheck = (round: RoundRecord) => {

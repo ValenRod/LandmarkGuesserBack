@@ -17,10 +17,10 @@ export class RoundRecord implements RoundEntity {
     this.id = obj.id;
     this.roundNumber = obj.roundNumber;
     this.landmarkId = obj.landmarkId;
-    this.playerGuessLat = obj.playerGuessLat;
-    this.playerGuessLng = obj.playerGuessLng;
-    this.distance = obj.distance;
-    this.points = obj.points;
+    this.playerGuessLat = obj.playerGuessLat ?? null;
+    this.playerGuessLng = obj.playerGuessLng ?? null;
+    this.distance = obj.distance ?? null;
+    this.points = obj.points ?? null;
   }
 
   static async getOne(id: string): Promise<RoundRecord | null> {
