@@ -15,3 +15,7 @@ export interface RoundEntity {
   distance: number | null;
   points: number | null;
 }
+
+export interface NewRoundEntity extends Omit<RoundEntity, 'id'> {
+  id?: string;
+}
