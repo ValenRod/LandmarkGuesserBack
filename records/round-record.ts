@@ -1,6 +1,7 @@
 import {NewRoundEntity, RoundEntity, RoundNumber} from '../types';
 import {FieldPacket} from 'mysql2';
 import {pool} from '../utils/db';
+import {v4 as uuid} from 'uuid';
 
 type RoundRecordResults = [RoundEntity[], FieldPacket[]];
 
@@ -32,5 +33,23 @@ export class RoundRecord implements RoundEntity {
     )) as RoundRecordResults;
 
     return results.length === 0 ? null : new RoundRecord(results[0]);
+  }
+
+  async insert(): Promise<string> {
+    if (!this.id) {
+      this.id = uuid();
+    } else {
+      throw new Error('Cannot insert something that is already inserted!!!');
+    }
+
+    await pool.execute(
+      'INSERT INTO `rounds`(`id`, `roundNumber`, `landmarkId`) VALUES(:id, :roundNumber, :landmarkId)',
+      {
+        id: this.id,
+        roundNumber: this.roundNumber,
+        landmarkId: this.landmarkId,
+      },
+    );
+    return this.id;
   }
 }
