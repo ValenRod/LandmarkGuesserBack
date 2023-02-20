@@ -30,3 +30,14 @@ test('Can build RoundRecord', () => {
   const round = new RoundRecord(roundObj);
   valuesCheck(round);
 });
+
+test('RoundRecord.getOne returns data from database from one entry.', async () => {
+  const round = await RoundRecord.getOne(roundObj.id);
+  expect(round).toBeDefined();
+  valuesCheck(round);
+});
+
+test('RoundRecord.getOne returns null from database if entry does not exist.', async () => {
+  const round = await RoundRecord.getOne('-');
+  expect(round).toBeNull();
+});

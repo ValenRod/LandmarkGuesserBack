@@ -1,4 +1,8 @@
 import {NewRoundEntity, RoundEntity, RoundNumber} from '../types';
+import {FieldPacket} from 'mysql2';
+import {pool} from '../utils/db';
+
+type RoundRecordResults = [RoundEntity[], FieldPacket[]];
 
 export class RoundRecord implements RoundEntity {
   id: string;
@@ -17,5 +21,16 @@ export class RoundRecord implements RoundEntity {
     this.playerGuessLng = obj.playerGuessLng;
     this.distance = obj.distance;
     this.points = obj.points;
+  }
+
+  static async getOne(id: string): Promise<RoundRecord | null> {
+    const [results] = (await pool.execute(
+      'SELECT * FROM `rounds` WHERE `id` = :id',
+      {
+        id,
+      },
+    )) as RoundRecordResults;
+
+    return results.length === 0 ? null : new RoundRecord(results[0]);
   }
 }
