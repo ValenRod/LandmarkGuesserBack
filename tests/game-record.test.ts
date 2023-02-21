@@ -32,3 +32,14 @@ test('Can build GameRecord', () => {
   const game = new GameRecord(gameObj);
   valuesCheck(game, gameObj);
 });
+
+test('GameRecord.getOne returns data from database from one entry.', async () => {
+  const game = await GameRecord.getOne(gameObj.id);
+  expect(game).toBeDefined();
+  valuesCheck(game, gameObj);
+});
+
+test('GameRecord.getOne returns null from database if entry does not exist.', async () => {
+  const game = await GameRecord.getOne('-');
+  expect(game).toBeNull();
+});
