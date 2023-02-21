@@ -18,3 +18,14 @@ export interface GameEntity {
 export interface NewGameEntity extends Omit<GameEntity, 'id'> {
   id?: string;
 }
+
+export interface GameRecordGetOneResponse {
+  id: string;
+  firstRoundId: string;
+  secondRoundId: string | null;
+  thirdRoundId: string | null;
+  fourthRoundId: string | null;
+  fifthRoundId: string | null;
+  currentRound: RoundNumber;
+  totalPoints: number;
+}
