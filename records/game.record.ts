@@ -7,6 +7,7 @@ import {
 } from '../types';
 import {pool} from '../utils/db';
 import {FieldPacket} from 'mysql2';
+import {v4 as uuid} from 'uuid';
 
 type GameRecordResults = [GameRecordGetOneResponse[], FieldPacket[]];
 
@@ -52,5 +53,29 @@ export class GameRecord implements GameEntity {
     } else {
       return null;
     }
+  }
+
+  async insert(): Promise<string> {
+    if (!this.id) {
+      this.id = uuid();
+    } else {
+      throw new Error('Cannot insert something that is already inserted!!!');
+    }
+
+    await pool.execute(
+      'INSERT INTO `games`(`id`, `firstRoundId`, `secondRoundId`, `thirdRoundId`, `fourthRoundId`, `fifthRoundId`, `currentRound`, `totalPoints`) VALUES(:id, :firstRoundId, :secondRoundId, :thirdRoundId, :fourthRoundId, :fifthRoundId, :currentRound, :totalPoints)',
+      {
+        id: this.id,
+        firstRoundId: this.rounds.firstRoundId,
+        secondRoundId: this.rounds.secondRoundId,
+        thirdRoundId: this.rounds.thirdRoundId,
+        fourthRoundId: this.rounds.fourthRoundId,
+        fifthRoundId: this.rounds.fifthRoundId,
+        currentRound: this.currentRound,
+        totalPoints: this.totalPoints,
+      },
+    );
+
+    return this.id;
   }
 }
