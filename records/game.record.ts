@@ -75,7 +75,22 @@ export class GameRecord implements GameEntity {
         totalPoints: this.totalPoints,
       },
     );
-
     return this.id;
+  }
+
+  async update(): Promise<void> {
+    await pool.execute(
+      'UPDATE `games` SET `firstRoundId` = :firstRoundId, `secondRoundId` = :secondRoundId, `thirdRoundId` = :thirdRoundId, `fourthRoundId` = :fourthRoundId, `fifthRoundId` = :fifthRoundId, `currentRound` = :currentRound, `totalPoints` = :totalPoints WHERE `id` = :id',
+      {
+        id: this.id,
+        firstRoundId: this.rounds.firstRoundId,
+        secondRoundId: this.rounds.secondRoundId,
+        thirdRoundId: this.rounds.thirdRoundId,
+        fourthRoundId: this.rounds.fourthRoundId,
+        fifthRoundId: this.rounds.fifthRoundId,
+        currentRound: this.currentRound,
+        totalPoints: this.totalPoints,
+      },
+    );
   }
 }

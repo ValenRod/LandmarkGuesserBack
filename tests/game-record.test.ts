@@ -75,3 +75,28 @@ test('GameRecord cannot be inserted if it has an id.', async () => {
   expect(message).toBeDefined();
   expect(message).toBe('Cannot insert something that is already inserted!!!');
 });
+
+test('GameRecord.update updates data in database', async () => {
+  const game = new GameRecord(newGameObj);
+  const id = await game.insert();
+  const rounds: RoundsOfGameEntity = {
+    firstRoundId: 'testId',
+    secondRoundId: 'testId',
+    thirdRoundId: null,
+    fourthRoundId: null,
+    fifthRoundId: null,
+  };
+  const updatedGameObj = {
+    id,
+    rounds,
+    currentRound: RoundNumber.Second,
+    totalPoints: 800,
+  };
+
+  game.rounds.secondRoundId = updatedGameObj.rounds.secondRoundId;
+  game.currentRound = updatedGameObj.currentRound;
+  game.totalPoints = updatedGameObj.totalPoints;
+  await game.update();
+  const updatedGame = await GameRecord.getOne(id);
+  valuesCheck(updatedGame, updatedGameObj);
+});
