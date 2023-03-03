@@ -15,11 +15,11 @@ import haversineDistance from 'haversine-distance';
 import {pointsCalc} from '../utils/points';
 
 const createNewRound = async (
-  currentRound: RoundNumber,
+  roundNumber: RoundNumber,
   landmarkId: string,
 ): Promise<string> => {
   const newRoundObj: NewRoundEntity = {
-    roundNumber: currentRound,
+    roundNumber,
     landmarkId,
   };
   const round = new RoundRecord(newRoundObj);
@@ -85,5 +85,55 @@ export const gameRouter = Router()
 
     await round.update();
     await game.update();
+    res.end();
+  })
+  .post('./:id', async (req, res) => {
+    const game = new GameRecord(await GameRecord.getOne(req.params.id));
+    const {currentRound} = game;
+
+    if (currentRound !== RoundNumber.Fifth) {
+      const rounds = Object.values(game.rounds);
+      const usedLandmarks: string[] = [];
+
+      for (const id of rounds) {
+        if (id !== null) {
+          const landmark = (await RoundRecord.getOne(id)).landmarkId;
+          usedLandmarks.push(landmark);
+        }
+      }
+
+      const allLandmarks = await LandmarkRecord.findAll();
+      let drawnLandmark: string;
+
+      do {
+        drawnLandmark = landmarkDraw(allLandmarks);
+      } while (usedLandmarks.includes(drawnLandmark));
+
+      const newRoundId = await createNewRound(currentRound + 1, drawnLandmark);
+
+      switch (currentRound) {
+        case RoundNumber.First: {
+          game.currentRound = RoundNumber.Second;
+          game.rounds.secondRoundId = newRoundId;
+          break;
+        }
+        case RoundNumber.Second: {
+          game.currentRound = RoundNumber.Third;
+          game.rounds.thirdRoundId = newRoundId;
+          break;
+        }
+        case RoundNumber.Third: {
+          game.currentRound = RoundNumber.Fourth;
+          game.rounds.fourthRoundId = newRoundId;
+          break;
+        }
+        case RoundNumber.Fourth: {
+          game.currentRound = RoundNumber.Fifth;
+          game.rounds.fifthRoundId = newRoundId;
+          break;
+        }
+      }
+      await game.update();
+    }
     res.end();
   });
