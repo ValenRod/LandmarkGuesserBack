@@ -3,10 +3,13 @@ import {landmarkDraw} from '../utils/landmarkDraw';
 import {LandmarkRecord} from '../records/landmark.record';
 import {
   Coordinates,
+  GameParams,
   GameUpdateRequestBody,
+  LandmarkParams,
   NewGameEntity,
   NewRoundEntity,
   RoundNumber,
+  RoundParams,
   RoundsOfGameEntity,
 } from '../types';
 import {RoundRecord} from '../records/round-record';
@@ -24,6 +27,33 @@ const createNewRound = async (
   };
   const round = new RoundRecord(newRoundObj);
   return await round.insert();
+};
+
+const getRoundParams = async (roundId: string): Promise<RoundParams> => {
+  const roundData = await RoundRecord.getOne(roundId);
+  const landmarkData = new LandmarkRecord(
+    await LandmarkRecord.getOne(roundData.landmarkId),
+  );
+
+  let landmark: LandmarkParams;
+  const {url, lat, lng} = landmarkData;
+
+  if (roundData.points !== null) {
+    landmark = {url, lat, lng};
+  } else {
+    landmark = {
+      url,
+      lat: null,
+      lng: null,
+    };
+  }
+
+  const round = (({id, landmarkId, ...roundData}) => roundData)(roundData);
+
+  return {
+    ...round,
+    landmark,
+  };
 };
 
 export const gameRouter = Router()
@@ -87,7 +117,7 @@ export const gameRouter = Router()
     await game.update();
     res.end();
   })
-  .post('./:id', async (req, res) => {
+  .post('/:id', async (req, res) => {
     const game = new GameRecord(await GameRecord.getOne(req.params.id));
     const {currentRound} = game;
 
@@ -136,4 +166,47 @@ export const gameRouter = Router()
       await game.update();
     }
     res.end();
+  })
+  .get('/:id', async (req, res) => {
+    const gameObj = new GameRecord(await GameRecord.getOne(req.params.id));
+    let currRoundId: string;
+
+    switch (gameObj.currentRound) {
+      case RoundNumber.First: {
+        currRoundId = gameObj.rounds.firstRoundId;
+        break;
+      }
+      case RoundNumber.Second: {
+        currRoundId = gameObj.rounds.secondRoundId;
+        break;
+      }
+      case RoundNumber.Third: {
+        currRoundId = gameObj.rounds.thirdRoundId;
+        break;
+      }
+      case RoundNumber.Fourth: {
+        currRoundId = gameObj.rounds.fourthRoundId;
+        break;
+      }
+      case RoundNumber.Fifth: {
+        currRoundId = gameObj.rounds.fifthRoundId;
+        break;
+      }
+    }
+
+    const rounds: RoundParams[] = [];
+    const currRound = await getRoundParams(currRoundId);
+
+    if (currRound.roundNumber === RoundNumber.Fifth && currRound.points) {
+      const gameRoundsId = Object.values(gameObj.rounds);
+      for (const roundId of gameRoundsId) {
+        rounds.push(await getRoundParams(roundId));
+      }
+    } else {
+      rounds.push(await getRoundParams(currRoundId));
+    }
+
+    const gameParams = (({rounds, ...gameObj}) => gameObj)(gameObj);
+    const game: GameParams = {...gameParams, rounds};
+    res.json(game);
   });
