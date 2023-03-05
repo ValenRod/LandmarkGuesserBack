@@ -1,3 +1,5 @@
+import {LandmarkParams} from '../landmark';
+
 export enum RoundNumber {
   First = 1,
   Second = 2,
@@ -26,4 +28,8 @@ export interface NewRoundEntity
   playerGuessLng?: number | null;
   distance?: number | null;
   points?: number | null;
+}
+
+export interface RoundParams extends Omit<RoundEntity, 'id' | 'landmarkId'> {
+  landmark: LandmarkParams;
 }

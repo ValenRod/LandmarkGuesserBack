@@ -1,4 +1,4 @@
-import {RoundNumber} from '../round';
+import {RoundNumber, RoundParams} from '../round';
 
 export interface RoundsOfGameEntity {
   firstRoundId: string | null;
@@ -28,4 +28,8 @@ export interface GameRecordGetOneResponse {
   fifthRoundId: string | null;
   currentRound: RoundNumber;
   totalPoints: number;
+}
+
+export interface GameParams extends Omit<GameEntity, 'rounds'> {
+  rounds: RoundParams[];
 }
