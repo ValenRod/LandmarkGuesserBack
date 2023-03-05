@@ -1,4 +1,4 @@
-import {RoundRecord} from '../records/round-record';
+import {RoundRecord} from '../records/round.record';
 import {pool} from '../utils/db';
 import {NewRoundEntity, RoundNumber} from '../types';
 

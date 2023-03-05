@@ -10,7 +10,7 @@ import {
   RoundParams,
   RoundsOfGameEntity,
 } from '../types';
-import {RoundRecord} from '../records/round-record';
+import {RoundRecord} from '../records/round.record';
 import {GameRecord} from '../records/game.record';
 import haversineDistance from 'haversine-distance';
 import {pointsCalc} from '../utils/points';

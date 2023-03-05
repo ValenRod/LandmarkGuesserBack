@@ -4,7 +4,7 @@ import {
   RoundNumber,
   RoundParams,
 } from '../types';
-import {RoundRecord} from '../records/round-record';
+import {RoundRecord} from '../records/round.record';
 import {LandmarkRecord} from '../records/landmark.record';
 
 export const createNewRound = async (
