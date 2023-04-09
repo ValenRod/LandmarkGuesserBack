@@ -22,6 +22,15 @@ export const updateGameRoundController = async (
     const currentRound = game.currentRound;
     const totalPoints = game.totalPoints;
     const reqBody: GameUpdateRequestBody = req.body;
+    const {playerGuessCoordinates} = reqBody;
+
+    if (
+      !playerGuessCoordinates ||
+      !playerGuessCoordinates.lat ||
+      !playerGuessCoordinates.lng
+    ) {
+      throw new ValidationError('Incorrect data!');
+    }
 
     const round = new RoundRecord(
       await RoundRecord.getOne(rounds[currentRound - 1]),
@@ -34,7 +43,6 @@ export const updateGameRoundController = async (
       await LandmarkRecord.getOne(round.landmarkId),
     );
 
-    const {playerGuessCoordinates} = reqBody;
     const landmarkCoordinates: Coordinates = {
       lat: landmark.lat,
       lng: landmark.lng,
