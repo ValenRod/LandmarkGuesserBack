@@ -1,6 +1,7 @@
 import express, {json} from 'express';
-import cors from 'cors';
 import 'express-async-errors';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import {handleError} from './utils/errors';
 import {gameRouter} from './routers/game.router';
 
@@ -12,6 +13,13 @@ app.use(
   }),
 );
 app.use(json());
+
+app.use(
+  rateLimit({
+    windowMs: 5 * 60 * 1000,
+    max: 100,
+  }),
+);
 
 app.use(handleError);
 
