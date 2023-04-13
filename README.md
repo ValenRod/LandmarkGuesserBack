@@ -1,5 +1,5 @@
 # LandmarkGuesser - Backend
-Project LandmarkGuesser is a simple copy of [GeoGuessr](https://www.geoguessr.com/) game. The rules are basicly the same: players in this case are given an image of a landamrk and their goal is to guess it's location on the map. The closer a guess was, the more points they get. Game consist of 5 rounds.
+Project LandmarkGuesser is a simple copy of [GeoGuessr](https://www.geoguessr.com/) game. The rules are practically the same: players are given an image of a landmark and their goal is to guess its location on the map. The closer their guess, the more points they score. The game consists of 5 rounds.
 
 ## General info
 Backend repository for my fullstack application. I used [TypeScript](https://www.npmjs.com/package/typescript), [Express](https://expressjs.com/), [MySQL](https://www.mysql.com/) database and also [haversine-distance](https://www.npmjs.com/package/haversine-distance) to calculate the distance between 2 coordinates. Application is using 1 router which handles 4 queries:
